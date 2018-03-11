@@ -1,0 +1,151 @@
+<?php
+    session_start();
+
+    if($_SESSION['rola']!="admin")
+    {
+        header('Location: index.html');
+        exit();
+    }
+
+    if(isset($_POST['tytul'])) {
+        $wszystko_OK = true;
+
+        //Sprawdzenie tytulu
+        $tytul = $_POST['tytul'];
+        if(strlen($tytul) < 3 || strlen($tytul) > 50) {
+            $wszystko_OK = false;
+            $_SESSION['e_tytul'] = "Tytuł musi posiadać od 3 do 50 znaków";
+        }
+
+        //Sprawdzenie opisu
+        $opis = $_POST['opis'];
+        if(strlen($opis) < 3) {
+            $wszystko_OK = false;
+            $_SESSION['e_opis'] = "Opis musi posiadać ponad 3 znaki";
+        } elseif (strlen($opis) > 1500) {
+            $wszystko_OK = false;
+            $_SESSION['e_opis'] = "Opis nie może posiadać więcej niż 1500 znaków";
+        }
+
+        //Sprawdzanie ścieżki
+        $sciezka = $_POST['sciezka'];
+        if(strlen($sciezka) > 50) {
+            $wszystko_OK = false;
+            $_SESSION['e_sciezka'] = "Ścieżka nie może posiadać więcej niż 50 znaków";
+        }
+
+        require_once "connect.php";
+        mysqli_report(MYSQLI_REPORT_STRICT);
+
+        //Dodawanie Posta
+        try {
+            $polaczenie = new mysqli($host, $db_user, $db_password, $db_name);
+            if($polaczenie->connect_errno!=0)
+            {
+                throw new Exception(mysqli_connect_errno());
+            } else {
+                if ($wszystko_OK==true)
+                {
+                    if ($polaczenie->query(sprintf("INSERT INTO posty
+                                                    VALUES(NULL, '%s', '%s', '%s', '%s', '%s', now())",
+                                                    $_SESSION['user'],
+                                                    $_SESSION['email'],
+                                                    $tytul,
+                                                    $opis,
+                                                    $sciezka)))
+                    {
+                        $_SESSION['post-dodany'] = true;
+                        header("Location: postdodany.php");
+                    }
+                    else {
+                        throw new Exception($polaczenie->error);
+                    }
+                }
+            }
+
+            $polaczenie->close();
+        }
+        catch (Exception $e) {
+
+        }
+
+    }
+?>
+
+<!DOCTYPE HTML>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>Osadnicy - gra przeglądarkowa</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+    <div class="container">
+        <img src="images/logo.png" style="width: 60%;" alt="LOGO"> <br>
+
+        <?php
+            if(isset($_SESSION['zalogowany']))
+            {
+                echo "<p>Witaj ".$_SESSION['user'].'! [ <a href="logout.php">Wyloguj</a> ]';
+
+                if ($_SESSION['rola']=="admin") {
+                    echo '[ <a href="index.php">Strona Główna</a> ]</p>';
+                } else {
+                    echo '</p>';
+                }
+            }
+        ?>
+
+        <div class="newpost">
+            <form method="post">
+                Tytuł: <input type="text" class="newpost-input" name="tytul">
+                <?php
+                    if(isset($_SESSION['e_tytul']))
+                    {
+                        echo '<div class="error">'.$_SESSION['e_tytul'].'</div>';
+                        unset($_SESSION['e_tytul']);
+                    }
+                ?>
+                <br>
+
+                Opis: <input type="text" class="newpost-input" name="opis">
+                <?php
+                    if(isset($_SESSION['e_opis']))
+                    {
+                        echo '<div class="error">'.$_SESSION['e_opis'].'</div>';
+                        unset($_SESSION['e_opis']);
+                    }
+                ?>
+                <br>
+
+                OpisTA: <br> <textarea name="opis2" id="opis2id" rows="10" class="newpost-input"></textarea> <br>
+
+                Ścieżka do zdjęcia: <input type="text" class="newpost-input" name="sciezka">
+                <?php
+                    if(isset($_SESSION['e_sciezka']))
+                    {
+                        echo '<div class="error">'.$_SESSION['e_sciezka'].'</div><br>';
+                        unset($_SESSION['e_sciezka']);
+                    } else {
+                        echo "<br>";
+                    }
+                ?>
+                <br>
+
+                <input type="submit" class="btn btn-primary newpost-input" value="Dodaj post">
+            </form>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
