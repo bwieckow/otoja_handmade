@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker stack deploy --compose-file docker-compose.yml otoja
+docker stack deploy --prune --compose-file docker-compose.yml otoja

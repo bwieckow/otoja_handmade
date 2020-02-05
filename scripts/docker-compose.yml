@@ -14,6 +14,7 @@ services:
       - 3306:3306
     volumes:
       - ./mysql_image/uzytkownicy.sql:/docker-entrypoint-initdb.d/dump.sql
+      - /var/databases/otoja_mysql:/var/lib/mysql
 
   php:
     image: otoja:1.0

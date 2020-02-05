@@ -57,8 +57,8 @@ INSERT INTO `uzytkownicy` (`id`, `user`, `pass`, `email`, `drewno`, `kamien`, `z
 (8, 'jakub', 'ertyu', 'jakub@gmail.com', 2467, 557, 876, 0),
 (9, 'janusz', 'cvbnm', 'janusz@gmail.com', 65, 456, 2467, 0),
 (10, 'roman', 'dfghj', 'roman@gmail.com', 97, 226, 245, 23),
-(11, 'mirek', '$2y$10$vmSNIWWZApqXydGJ5q9XC.63kF4JvvURC0l2Ns4Qh3nNc55OL.Y6W', 'zelent.miroslaw@gmail.com', 100, 100, 100, 14);
-(12, 'barti', '12345678', 'barti@bw.com', 100, 100, 100, 14);
+(11, 'mirek', '$2y$10$vmSNIWWZApqXydGJ5q9XC.63kF4JvvURC0l2Ns4Qh3nNc55OL.Y6W', 'zelent.miroslaw@gmail.com', 100, 100, 100, 14),
+(12, 'barti', '$2y$10$LE6hLruxdJcLwStu7y/xrezbtT5dNuWn4nyiknkOU2AfH2Vyt67AO', 'barti@bw.com', 100, 100, 100, 14);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -96,3 +96,8 @@ data_dodania TIMESTAMP
 
 UPDATE uzytkownicy SET rola="admin" WHERE id=1;
 UPDATE uzytkownicy SET rola="admin" WHERE id=12;
+
+use mysql;
+
+SET PASSWORD FOR root@'%' = PASSWORD('lampa22');
+FLUSH PRIVILEGES;
