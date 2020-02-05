@@ -58,6 +58,7 @@ INSERT INTO `uzytkownicy` (`id`, `user`, `pass`, `email`, `drewno`, `kamien`, `z
 (9, 'janusz', 'cvbnm', 'janusz@gmail.com', 65, 456, 2467, 0),
 (10, 'roman', 'dfghj', 'roman@gmail.com', 97, 226, 245, 23),
 (11, 'mirek', '$2y$10$vmSNIWWZApqXydGJ5q9XC.63kF4JvvURC0l2Ns4Qh3nNc55OL.Y6W', 'zelent.miroslaw@gmail.com', 100, 100, 100, 14);
+(12, 'barti', '12345678', 'barti@bw.com', 100, 100, 100, 14);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -94,3 +95,4 @@ data_dodania TIMESTAMP
 );
 
 UPDATE uzytkownicy SET rola="admin" WHERE id=1;
+UPDATE uzytkownicy SET rola="admin" WHERE id=12;

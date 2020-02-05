@@ -2,7 +2,8 @@ version: '3.1'
 
 services:
   db:
-    image: otoja_mysql:0.2
+    image: mysql:5.6
+    entrypoint: ['/entrypoint.sh', '--default-authentication-plugin=mysql_native_password']
     deploy:
         replicas: 1
     restart: always
@@ -11,8 +12,16 @@ services:
       MYSQL_DATABASE: osadnicy
     ports:
       - 3306:3306
+    volumes:
+      - ./mysql_image/uzytkownicy.sql:/docker-entrypoint-initdb.d/dump.sql
+
   php:
-    image: apache:0.4.5
+    image: otoja:1.0
     ports:
-      - 80:80
-      - 443:443
+      - 9080:80
+      - 9443:443
+
+networks:
+  default:
+    external:
+      name: core
